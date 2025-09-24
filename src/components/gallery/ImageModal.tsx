@@ -32,31 +32,21 @@ export const ImageModal = ({ image, isOpen, onClose, onTagClick }: ImageModalPro
           />
         </div>
         
-        <div className="p-6 space-y-4">
-          <DialogTitle className="text-2xl font-bold text-foreground">
+        <div className="p-6">
+          <DialogTitle className="text-xl font-mono font-bold text-foreground mb-4">
             {image.title}
           </DialogTitle>
           
-          <div className="flex flex-wrap gap-2" role="list" aria-label="Image tags">
-            {image.tags.map((tag) => (
+          <div className="flex flex-wrap gap-2">
+            {image.tags.map(tag => (
               <Badge
                 key={tag}
                 variant="secondary"
-                className="bg-gallery-tag hover:bg-gallery-tag-hover text-foreground cursor-pointer transition-all duration-200 hover:scale-105"
+                className="cursor-pointer font-mono text-xs bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
                 onClick={() => {
                   onTagClick(tag);
                   onClose();
                 }}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onTagClick(tag);
-                    onClose();
-                  }
-                }}
-                role="button"
-                aria-label={`Filter by ${tag} tag`}
               >
                 {tag}
               </Badge>
