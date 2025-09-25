@@ -6,6 +6,7 @@ import { ImageGrid } from '@/components/gallery/ImageGrid';
 import { ImageModal } from '@/components/gallery/ImageModal';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
+import { Loading } from '@/components/ui/loading';
 
 const Index = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -16,6 +17,7 @@ const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [archiveMode, setArchiveMode] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const allTags = getAllTags();
 
@@ -92,21 +94,33 @@ const Index = () => {
   };
 
   const handleTagClick = (tag: string) => {
-    setSelectedTag(tag);
-    setArchiveMode(null);
-    setFilters({ searchTerm: '', activeTags: [] });
+    setIsLoading(true);
+    setTimeout(() => {
+      setSelectedTag(tag);
+      setArchiveMode(null);
+      setFilters({ searchTerm: '', activeTags: [] });
+      setIsLoading(false);
+    }, 800);
   };
 
   const handleArchiveFolderClick = (folderTag: string) => {
-    setArchiveMode(folderTag);
-    setSelectedTag(null);
-    setFilters({ searchTerm: '', activeTags: [] });
+    setIsLoading(true);
+    setTimeout(() => {
+      setArchiveMode(folderTag);
+      setSelectedTag(null);
+      setFilters({ searchTerm: '', activeTags: [] });
+      setIsLoading(false);
+    }, 800);
   };
 
   const handleShowAll = () => {
-    setArchiveMode(null);
-    setSelectedTag(null);
-    setFilters({ searchTerm: '', activeTags: [] });
+    setIsLoading(true);
+    setTimeout(() => {
+      setArchiveMode(null);
+      setSelectedTag(null);
+      setFilters({ searchTerm: '', activeTags: [] });
+      setIsLoading(false);
+    }, 800);
   };
 
   const getPageTitle = () => {
@@ -189,6 +203,7 @@ const Index = () => {
           />
         </SidebarInset>
       </div>
+      <Loading isVisible={isLoading} />
     </SidebarProvider>
   );
 };
