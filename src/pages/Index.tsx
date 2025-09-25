@@ -135,6 +135,17 @@ const Index = () => {
     }, 800);
   };
 
+  const handleBackToMainMenu = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setShowMainMenu(true);
+      setArchiveMode(null);
+      setSelectedTag(null);
+      setFilters({ searchTerm: '', activeTags: [] });
+      setIsLoading(false);
+    }, 800);
+  };
+
   const getPageTitle = () => {
     if (selectedTag) {
       return `${selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}`;
@@ -174,6 +185,7 @@ const Index = () => {
           onArchiveFolderClick={handleArchiveFolderClick}
           onTagClick={handleTagClick}
           onShowAll={handleShowAll}
+          onBackToMainMenu={handleBackToMainMenu}
           allTags={allTags}
           activeFilters={filters.activeTags}
         />

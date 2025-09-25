@@ -20,6 +20,7 @@ interface AppSidebarProps {
   onArchiveFolderClick: (folderTag: string) => void;
   onTagClick: (tag: string) => void;
   onShowAll: () => void;
+  onBackToMainMenu: () => void;
   allTags: string[];
   activeFilters: string[];
 }
@@ -34,7 +35,8 @@ const archiveFolders = [
 export function AppSidebar({ 
   onArchiveFolderClick, 
   onTagClick, 
-  onShowAll, 
+  onShowAll,
+  onBackToMainMenu, 
   allTags, 
   activeFilters 
 }: AppSidebarProps) {
@@ -63,7 +65,7 @@ export function AppSidebar({
             <Button 
               variant="ghost" 
               size="icon" 
-              onClick={onShowAll}
+              onClick={onBackToMainMenu}
               className="w-8 h-8 font-mono"
               title="Archive"
             >
@@ -90,7 +92,12 @@ export function AppSidebar({
   return (
     <Sidebar className="border-r border-border">
       <SidebarHeader className="p-4 border-b border-border">
-        <h2 className="font-mono font-bold text-sm tracking-wide">ARCHIVE</h2>
+        <button 
+          onClick={onBackToMainMenu}
+          className="w-full text-left hover:bg-muted/50 rounded p-2 transition-colors"
+        >
+          <h2 className="font-mono font-bold text-sm tracking-wide">ARCHIVE</h2>
+        </button>
       </SidebarHeader>
       
       <SidebarContent className="p-4">
