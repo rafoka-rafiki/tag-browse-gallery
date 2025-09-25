@@ -7,6 +7,7 @@ import { ImageModal } from '@/components/gallery/ImageModal';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { Loading } from '@/components/ui/loading';
+import { MainMenu } from '@/components/MainMenu';
 
 const Index = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -18,6 +19,7 @@ const Index = () => {
   const [archiveMode, setArchiveMode] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showMainMenu, setShowMainMenu] = useState(true);
 
   const allTags = getAllTags();
 
@@ -109,6 +111,7 @@ const Index = () => {
       setArchiveMode(folderTag);
       setSelectedTag(null);
       setFilters({ searchTerm: '', activeTags: [] });
+      setShowMainMenu(false);
       setIsLoading(false);
     }, 800);
   };
@@ -119,6 +122,15 @@ const Index = () => {
       setArchiveMode(null);
       setSelectedTag(null);
       setFilters({ searchTerm: '', activeTags: [] });
+      setShowMainMenu(false);
+      setIsLoading(false);
+    }, 800);
+  };
+
+  const handleEnterGallery = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setShowMainMenu(false);
       setIsLoading(false);
     }, 800);
   };
@@ -142,6 +154,18 @@ const Index = () => {
     }
     return 'Explore our curated collection of stunning images';
   };
+
+  if (showMainMenu) {
+    return (
+      <>
+        <MainMenu 
+          onArchiveFolderClick={handleArchiveFolderClick}
+          onEnterGallery={handleEnterGallery}
+        />
+        <Loading isVisible={isLoading} />
+      </>
+    );
+  }
 
   return (
     <SidebarProvider>
