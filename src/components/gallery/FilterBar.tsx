@@ -32,22 +32,6 @@ export const FilterBar = ({
         />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {allTags.map(tag => (
-          <Badge
-            key={tag}
-            variant={filters.activeTags.includes(tag) ? "default" : "secondary"}
-            className={`cursor-pointer transition-all duration-200 font-mono text-xs ${
-              filters.activeTags.includes(tag)
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground'
-            }`}
-            onClick={() => onTagToggle(tag)}
-          >
-            {tag}
-          </Badge>
-        ))}
-      </div>
 
       {(filters.searchTerm || filters.activeTags.length > 0) && (
         <Button

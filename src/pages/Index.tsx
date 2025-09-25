@@ -15,14 +15,21 @@ const Index = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [archiveMode, setArchiveMode] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const allTags = getAllTags();
 
   const filteredImages = useMemo(() => {
     let imagesToFilter = galleryImages;
     
+    // Selected tag filtering
+    if (selectedTag) {
+      imagesToFilter = galleryImages.filter(image => 
+        image.tags.includes(selectedTag)
+      );
+    }
     // Archive folder filtering
-    if (archiveMode) {
+    else if (archiveMode) {
       imagesToFilter = galleryImages.filter(image => {
         if (archiveMode === 'nature') {
           return image.tags.some(tag => 
@@ -49,13 +56,13 @@ const Index = () => {
         image.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
         image.tags.some(tag => tag.toLowerCase().includes(filters.searchTerm.toLowerCase()));
 
-      // Filter by active tags
-      const matchesTags = filters.activeTags.length === 0 ||
+      // Filter by active tags (only when not in selectedTag mode)
+      const matchesTags = selectedTag || filters.activeTags.length === 0 ||
         filters.activeTags.every(activeTag => image.tags.includes(activeTag));
 
       return matchesSearch && matchesTags;
     });
-  }, [filters, archiveMode]);
+  }, [filters, archiveMode, selectedTag]);
 
   const handleSearchChange = (search: string) => {
     setFilters(prev => ({ ...prev, searchTerm: search }));
@@ -85,22 +92,27 @@ const Index = () => {
   };
 
   const handleTagClick = (tag: string) => {
-    if (!filters.activeTags.includes(tag)) {
-      handleTagToggle(tag);
-    }
+    setSelectedTag(tag);
+    setArchiveMode(null);
+    setFilters({ searchTerm: '', activeTags: [] });
   };
 
   const handleArchiveFolderClick = (folderTag: string) => {
     setArchiveMode(folderTag);
+    setSelectedTag(null);
     setFilters({ searchTerm: '', activeTags: [] });
   };
 
   const handleShowAll = () => {
     setArchiveMode(null);
+    setSelectedTag(null);
     setFilters({ searchTerm: '', activeTags: [] });
   };
 
   const getPageTitle = () => {
+    if (selectedTag) {
+      return `${selectedTag.charAt(0).toUpperCase() + selectedTag.slice(1)}`;
+    }
     if (archiveMode) {
       return `${archiveMode.charAt(0).toUpperCase() + archiveMode.slice(1)} Archive`;
     }
@@ -108,6 +120,9 @@ const Index = () => {
   };
 
   const getPageDescription = () => {
+    if (selectedTag) {
+      return `Images tagged with ${selectedTag}`;
+    }
     if (archiveMode) {
       return `Browse our ${archiveMode} collection`;
     }
@@ -154,6 +169,7 @@ const Index = () => {
                 <p className="text-xs font-mono text-muted-foreground">
                   {filteredImages.length} / {galleryImages.length} images
                   {archiveMode && ` in ${archiveMode}`}
+                  {selectedTag && ` tagged with ${selectedTag}`}
                 </p>
               </div>
 
