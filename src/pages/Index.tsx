@@ -1,25 +1,45 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GalleryImage, FilterState } from '@/types/gallery';
 import { galleryImages, getAllTags } from '@/data/galleryData';
 import { FilterBar } from '@/components/gallery/FilterBar';
 import { ImageGrid } from '@/components/gallery/ImageGrid';
-import { ImageModal } from '@/components/gallery/ImageModal';
 import { AppSidebar } from '@/components/AppSidebar';
 import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import { Loading } from '@/components/ui/loading';
 import { MainMenu } from '@/components/MainMenu';
 
 const Index = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: '',
     activeTags: []
   });
-  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [archiveMode, setArchiveMode] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showMainMenu, setShowMainMenu] = useState(true);
+
+  useEffect(() => {
+    if (location.state) {
+      const state = location.state as any;
+      if (state.selectedTag) {
+        setSelectedTag(state.selectedTag);
+        setArchiveMode(null);
+        setShowMainMenu(false);
+      } else if (state.archiveMode) {
+        setArchiveMode(state.archiveMode);
+        setSelectedTag(null);
+        setShowMainMenu(false);
+      } else if (state.showMainMenu) {
+        setShowMainMenu(true);
+        setArchiveMode(null);
+        setSelectedTag(null);
+      }
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const allTags = getAllTags();
 
@@ -86,13 +106,11 @@ const Index = () => {
   };
 
   const handleImageClick = (image: GalleryImage) => {
-    setSelectedImage(image);
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-    setSelectedImage(null);
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate(`/image/${image.id}`);
+      setIsLoading(false);
+    }, 800);
   };
 
   const handleTagClick = (tag: string) => {
@@ -230,13 +248,6 @@ const Index = () => {
               />
             </main>
           </div>
-
-          <ImageModal 
-            image={selectedImage}
-            isOpen={isModalOpen}
-            onClose={handleModalClose}
-            onTagClick={handleTagClick}
-          />
         </SidebarInset>
       </div>
       <Loading isVisible={isLoading} />

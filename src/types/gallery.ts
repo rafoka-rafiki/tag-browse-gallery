@@ -4,6 +4,7 @@ export interface GalleryImage {
   title: string;
   tags: string[];
   alt: string;
+  description: string;
 }
 
 export interface FilterState {
